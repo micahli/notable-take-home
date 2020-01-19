@@ -66,12 +66,6 @@ api:
   # Domain is for the frontend
   domain: http://localhost:8081
 
-database:
-  # Connection URL for MongoDB and the name of the MongoDB database
-  mongodb:
-    connection_uri: mongodb://localhost:27017
-    database_name: notable-test
-
 
 ```
 Usage of starter:
