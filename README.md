@@ -22,6 +22,8 @@ http://localhost:8081/api/v1/doctor/appointment
   "kind": 0
 }
 
+this request will return the "UID" for this appointment, you should use this "UID" to cancel it.
+
 4. cancel an appointment
 
 DELETE request:
