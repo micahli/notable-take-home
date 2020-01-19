@@ -1,0 +1,11 @@
+listen_address: :8081
+
+api:
+  domain: localhost:8081
+  signing_secret: "notablehealth"
+
+database:
+  mongodb:
+    connection_uri: mongodb://localhost:27017
+    database_name: notable-test
+
