@@ -40,15 +40,12 @@ api:
   # Signing secret for the jwt authentication
   signing_secret: "your-super-secret"
 
-app:
-
 database:
   # Connection URL for MongoDB and the name of the MongoDB database
   mongodb:
     connection_uri: mongodb://localhost:27017
     database_name: notable-test
 
-After you adjust the configuration file you can use the **notable-take-home** as follows:
 
 ```
 Usage of starter:
