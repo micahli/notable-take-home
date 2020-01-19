@@ -15,7 +15,6 @@ POST request:
 http://localhost:8081/api/v1/doctor/appointment
 
 {
-  "uid": "7a161f5c64f548e1985a7897e00e346a",
   "doctoruid": "001",
   "patientfirstname": "micassh",
   "patientlastname": "zhdddo",
