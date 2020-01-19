@@ -19,15 +19,14 @@ import (
 type Config struct {
 	ListenAddress string `yaml:"listen_address"`
 
-	API  *api.Config  `yaml:"api"`
-	DB  *db.Config  `yaml:"database"`
+	API *api.Config `yaml:"api"`
 }
 
 // Instance represents an instance of the server
 type Instance struct {
 	API    *api.API
 	Config *Config
-	DB     db.DB
+	DB     *db.DB
 	//Mail   *mail.Client
 
 	httpServer *http.Server
@@ -55,17 +54,10 @@ func (i *Instance) Start(file string) {
 	}
 
 	// Establish database connection
-	i.DB, err = db.NewConnection(i.Config.DB)
-	if err != nil {
-		logrus.WithError(err).Fatal("Could not open database connection")
-	}
-	defer i.DB.CloseConnection()
-
-	// Setup mailing client
-	// i.Mail = mail.NewClient(i.Config.Mail)
+	i.DB = db.NewDB()
 
 	// Initialize API
-	i.API, err = api.New(i.Config.API, i.DB, router)  //i.Mail, 
+	i.API, err = api.New(i.Config.API, i.DB, router) //i.Mail,
 	if err != nil {
 		logrus.WithError(err).Fatal("Could not create API instance")
 	}
@@ -92,9 +84,6 @@ func (i *Instance) Start(file string) {
 
 // Shutdown stops the server
 func (i *Instance) Shutdown() {
-	// Shutdown all dependencies
-	i.DB.CloseConnection()
-
 	// Shutdown HTTP server
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

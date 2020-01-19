@@ -1,36 +1,93 @@
 package db
 
 import (
-	"github.com/micahli/notable-take-home/db/mongodb"
-	//"github.com/micahli/notable-take-home/model"
+	"fmt"
+	"github.com/micahli/notable-take-home/model"
+	"github.com/micahli/notable-take-home/utils"
 )
 
-// Config represents the configuration of the database interface
-type Config struct {
-	MongoDB *mongodb.Config
+// DB is the where all the data stores
+type DB struct {
+	allDoctors      []model.Doctor
+	allAppointments []model.Appointment
 }
 
-// DB is the interface which must be implemented by all db drivers
-type DB interface {
-	CloseConnection() error
+var dbInstance DB
 
-	// CreateUser(u *model.User) error
-	// GetUser(id string) (*model.User, error)
-	// GetUserByEmail(email string) (*model.User, error)
-	// SaveUser(u *model.User) error
-	// DeleteUser(id string) error
-
-	// GetUnusedAward() (*model.AwardInfo, error)
-	// UpdateAward(awardID string, userID string, cpnID string) error
-}
-
-// NewConnection creates a new database connection
-func NewConnection(config *Config) (DB, error) {
-	// Use MongoDB
-	db, err := mongodb.NewConnection(config.MongoDB)
-	if err != nil {
-		return nil, err
+func init() {
+	// init the data here
+	dbInstance.allDoctors = []model.Doctor{
+		model.Doctor{
+			UID:       "001",
+			FirstName: "Hibbert",
+			LastName:  "Julius",
+		},
+		model.Doctor{
+			UID:       "002",
+			FirstName: "Algernop",
+			LastName:  "Krieger",
+		},
+		model.Doctor{
+			UID:       "003",
+			FirstName: "Riviera",
+			LastName:  "Nick",
+		},
 	}
 
-	return db, nil
+	// dbInstance.allAppointments = []model.Appointment {
+	// 	model.Appointment{
+	// 		UID: "",
+
+	// 	}
+	// }
+}
+
+func NewDB() *DB {
+	return &dbInstance
+}
+
+func (db *DB) GetAllDoctors() ([]model.Doctor, error) {
+	return db.allDoctors, nil
+}
+
+func (db *DB) GetDoctorAppointments(uid string) ([]model.Appointment, error) {
+	var rst []model.Appointment
+	for _, val := range db.allAppointments {
+		if val.DoctorUID == uid {
+			rst = append(rst, val)
+		}
+	}
+
+	return rst, nil
+}
+
+func (db *DB) AddApointment(ap model.Appointment) (model.Appointment, error) {
+	// get all the doctor's appointment with same time
+	var sameTimeCnt int
+	for _, val := range db.allAppointments {
+		if val.DoctorUID == ap.DoctorUID && val.DateTime == ap.DateTime {
+			sameTimeCnt++
+		}
+	}
+
+	if sameTimeCnt >= 3 {
+		return ap, fmt.Errorf("More than three at the sametime")
+	}
+
+	ap.UID = utils.NewUUID()
+
+	dbInstance.allAppointments = append(dbInstance.allAppointments, ap)
+
+	return ap, nil
+}
+
+func (db *DB) CancelAppointment(ap model.Appointment) error {
+	for idx, val := range db.allAppointments {
+		if val.UID == ap.UID {
+			db.allAppointments = append(db.allAppointments[:idx], db.allAppointments[idx+1:]...)
+			break
+		}
+	}
+
+	return nil
 }

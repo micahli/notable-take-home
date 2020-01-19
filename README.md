@@ -1,13 +1,39 @@
 # notable-take-home
 
-This project contains a simple webserver for notable take home project. The Go server uses MongoDB to store data.
+This project contains a simple webserver for notable take home project. The Go server store data in memory.
+
+To run the server, you should install go runtime on the local machine.
+
+API: 
+1. get all the doctors
+http://localhost:8081/api/v1/doctor
+2. get one doctor's appointments
+http://localhost:8081/api/v1/doctor/001
+3. add an appointment to a doctor
+POST request:
+http://localhost:8081/api/v1/doctor/appointment
+
+{
+  "uid": "7a161f5c64f548e1985a7897e00e346a",
+  "doctoruid": "001",
+  "patientfirstname": "micassh",
+  "patientlastname": "zhdddo",
+  "datetime": "2020-01-20 15:15",
+  "kind": 0
+}
+
+4. cancel an appointment
+DELETE request:
+http://localhost:8081/api/v1/doctor/appointment
+
+{
+  "uid": "7a161f5c64f548e1985a7897e00e346a",
+}
+
 
 ## Features
 
 - [x] Go API using [Gorilla mux](github.com/gorilla/mux)
-
-- [x] [MongoDB](github.com/mongodb/mongo-go-driver) integration
-- [x] [JWT](github.com/dgrijalva/jwt-go) authentication
 - [x] Go server configuration via [.yml](gopkg.in/yaml.v2) file
 - [x] Using Go Modules for dependency management
 - [x] Makefile based project
@@ -37,8 +63,6 @@ listen_address: :8081
 api:
   # Domain is for the frontend
   domain: http://localhost:8081
-  # Signing secret for the jwt authentication
-  signing_secret: "your-super-secret"
 
 database:
   # Connection URL for MongoDB and the name of the MongoDB database
@@ -61,7 +85,5 @@ The Go dependencies are:
 
 - [crypto - Go supplementary cryptography libraries](golang.org/x/crypto)
 - [gorilla/mux - A powerful URL router and dispatcher for golang](github.com/gorilla/mux)
-- [jwt-go - Golang implementation of JSON Web Tokens (JWT)](github.com/dgrijalva/jwt-go)
 - [logrus - Structured, pluggable logging for Go](github.com/sirupsen/logrus)
-- [mongo-go-driver - The Go driver for MongoDB](github.com/mongodb/mongo-go-driver)
 - [yaml.v2 - YAML support for the Go language](gopkg.in/yaml.v2)

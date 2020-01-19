@@ -11,8 +11,7 @@ import (
 
 // Config represents the API configuration
 type Config struct {
-	Domain        string `yaml:"domain"`
-	SigningSecret string `yaml:"signing_secret"`
+	Domain string `yaml:"domain"`
 }
 
 // API represents the structure of the API
@@ -20,11 +19,11 @@ type API struct {
 	Router *mux.Router
 
 	config *Config
-	db     db.DB
+	db     *db.DB
 }
 
 // New returns the api settings
-func New(config *Config, db db.DB, router *mux.Router) (*API, error) {
+func New(config *Config, db *db.DB, router *mux.Router) (*API, error) {
 	api := &API{
 		config: config,
 		db:     db,
@@ -37,13 +36,11 @@ func New(config *Config, db db.DB, router *mux.Router) (*API, error) {
 	// Endpoint for healtcheck
 	api.Router.HandleFunc("/api/v1/health", api.corsMiddleware(api.logMiddleware(api.healthHandler))).Methods("GET")
 
-	// Account related api endpoints
-	//api.Router.HandleFunc("/api/v1/auth", api.corsMiddleware(api.logMiddleware(api.userLoginHandler))).Methods("POST")
-	// api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.userSignupHandler))).Methods("POST")
-	// api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.jwtMiddleware(api.userUpdateProfileHandler)))).Methods("PUT")
-	// api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.jwtMiddleware(api.userProfileHandler)))).Methods("GET")
-	// api.Router.HandleFunc("/api/v1/account/email/{id}/{token}", api.corsMiddleware(api.logMiddleware(api.userVerifyHandler))).Methods("GET")
-	// api.Router.HandleFunc("/api/v1/account/email", api.corsMiddleware(api.logMiddleware(api.userResendVerificationMail))).Methods("POST")
+	// Doctor related api endpoints
+	api.Router.HandleFunc("/api/v1/doctor", api.corsMiddleware(api.logMiddleware(api.getDoctorListHandler))).Methods("GET")
+	api.Router.HandleFunc("/api/v1/doctor/{id}", api.corsMiddleware(api.logMiddleware(api.getAppointmentListHandler))).Methods("GET")
+	api.Router.HandleFunc("/api/v1/doctor/appointment", api.corsMiddleware(api.logMiddleware(api.addAppointmentHandler))).Methods("POST")
+	api.Router.HandleFunc("/api/v1/doctor/appointment", api.corsMiddleware(api.logMiddleware(api.cancelAppointmentHandler))).Methods("DELETE")
 
 	return api, nil
 }
