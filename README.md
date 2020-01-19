@@ -4,13 +4,14 @@ This project contains a simple webserver for notable take home project. The Go s
 
 To run the server, you should install go runtime on the local machine.
 
-API: 
+## APIs: 
 1. get all the doctors
 http://localhost:8081/api/v1/doctor
 2. get one doctor's appointments
 http://localhost:8081/api/v1/doctor/001
 3. add an appointment to a doctor
 POST request:
+
 http://localhost:8081/api/v1/doctor/appointment
 
 {
@@ -23,6 +24,7 @@ http://localhost:8081/api/v1/doctor/appointment
 }
 
 4. cancel an appointment
+
 DELETE request:
 http://localhost:8081/api/v1/doctor/appointment
 
